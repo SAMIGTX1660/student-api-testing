@@ -791,12 +791,8 @@ newman run "API testing.postman_collection.json" -e "Automated.postman_environme
 
 # 👨‍💻 Author
 
-**Arthur**
+**Muhammed Jabed Iqbal Sami**
 
 QA / Software Testing Project
 
 ---
-
-## 📜 Disclaimer
-
-This project is intended for **educational and testing purposes**. The automated tests interact with the publicly available TestingWorld Student API and are designed to demonstrate API testing and automation concepts using Postman and Newman.
