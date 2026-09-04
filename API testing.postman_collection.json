@@ -1,0 +1,282 @@
+{
+  "info": {
+    "_postman_id": "81f978fd-7878-4d3f-b8e7-8da371fc8688",
+    "name": "API testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29436164"
+  },
+  "item": [
+    {
+      "name": "Create_Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\npm.environment.set(\"student_id\", responsebody.id);\r\n\r\n//Response time less than 30ms\r\npm.test(\"Check if time less than 1000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);\r\n});\r\n\r\n//Check status 201\r\npm.test(\"Check if status is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n//Check response size\r\npm.test(\"Response size is below 1000 bytes\", function () {\r\n    pm.expect(pm.response.responseSize).to.be.below(1000);\r\n});\r\n\r\npm.test(\"Check if booking id is not null\", function () {\r\n    pm.expect(responsebody.id).to.not.be.null;\r\n});\r\n\r\n// Check input fields are not empty\r\npm.test(\"Check if firstname is not empty\", function () {\r\n    pm.expect(responsebody.first_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if middle name is not empty\", function () {\r\n    pm.expect(responsebody.middle_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if lastname is not empty\", function () {\r\n    pm.expect(responsebody.last_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if date_of_birth is not empty\", function () {\r\n    pm.expect(responsebody.date_of_birth).to.not.be.empty;\r\n});\r\n\r\n//Checing if the input fields are correct or not\r\npm.test(\"Check if first_name is correct\", function () {\r\n    pm.expect(responsebody.first_name).to.equal(pm.environment.get(\"fname\"));\r\n});\r\n\r\npm.test(\"Check if middle_name is correct\", function () {\r\n    pm.expect(responsebody.middle_name).to.equal(pm.environment.get(\"mname\"));\r\n    });\r\n\r\npm.test(\"Check if last_name is correct\", function () {\r\n    pm.expect(responsebody.last_name).to.equal(pm.environment.get(\"lname\"));\r\n    });\r\n\r\npm.test(\"Check if DOB is correct\", function () {\r\n    pm.expect(responsebody.date_of_birth).to.equal(pm.environment.get(\"checkin\"));\r\n });\r\n\r\npm.test(\"Check if date_of_birth is in the correct format\", function () {\r\n    pm.expect(responsebody.date_of_birth).to.match(/^\\d{2}-\\d{2}-\\d{4}$/);\r\n });"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "//Setting a dynanic name\r\nvar firstname=pm.variables.replaceIn('{{$randomFirstName}}')\r\npm.environment.set(\"fname\",firstname)\r\nvar firstname=pm.variables.replaceIn('{{$randomFirstName}}')\r\npm.environment.set(\"mname\",firstname)\r\nvar lastname=pm.variables.replaceIn('{{$randomLastName}}')\r\npm.environment.set(\"lname\",lastname)\r\n\r\n//setting dates\r\nvar check=require('moment')\r\nvar checkin=check().format('DD-MM-YYYY')\r\npm.environment.set(\"checkin\",checkin)\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"first_name\": \"{{fname}}\",\r\n  \"middle_name\": \"{{mname}}\",\r\n  \"last_name\": \"{{lname}}\",\r\n  \"date_of_birth\": \"{{checkin}}\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/studentsDetails",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "studentsDetails"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Final_student_information",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\n\r\n// Check input fields are not empty\r\npm.test(\"Check if firstname is not empty\", function () {\r\n    pm.expect(responsebody.data.first_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if middle name is not empty\", function () {\r\n    pm.expect(responsebody.data.middle_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if lastname is not empty\", function () {\r\n    pm.expect(responsebody.data.last_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if date_of_birth is not empty\", function () {\r\n    pm.expect(responsebody.data.date_of_birth).to.not.be.empty;\r\n});\r\n\r\n//Checing if the input fields are correct or not\r\npm.test(\"Check if Id is correct\", function () {\r\n    pm.expect(responsebody.data.id).to.equal(pm.environment.get(\"student_id\"));\r\n});\r\n\r\npm.test(\"Check if first_name is correct\", function () {\r\n    pm.expect(responsebody.data.first_name).to.equal(pm.environment.get(\"fname\"));\r\n});\r\n\r\npm.test(\"Check if middle_name is correct\", function () {\r\n    pm.expect(responsebody.data.middle_name).to.equal(pm.environment.get(\"mname\"));\r\n    });\r\n\r\npm.test(\"Check if last_name is correct\", function () {\r\n    pm.expect(responsebody.data.last_name).to.equal(pm.environment.get(\"lname\"));\r\n    });\r\n\r\npm.test(\"Check if DOB is correct\", function () {\r\n    pm.expect(responsebody.data.date_of_birth).to.equal(pm.environment.get(\"checkin\"));\r\n });\r\n\r\npm.test(\"Check if date_of_birth is in the correct format\", function () {\r\n    pm.expect(responsebody.data.date_of_birth).to.match(/^\\d{2}-\\d{2}-\\d{4}$/);\r\n });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/FinalStudentDetails/{{student_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "FinalStudentDetails",
+            "{{student_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get_Specific_Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\n\r\n// Check input fields are not empty\r\npm.test(\"Check if firstname is not empty\", function () {\r\n    pm.expect(responsebody.data.first_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if middle name is not empty\", function () {\r\n    pm.expect(responsebody.data.middle_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if lastname is not empty\", function () {\r\n    pm.expect(responsebody.data.last_name).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Check if date_of_birth is not empty\", function () {\r\n    pm.expect(responsebody.data.date_of_birth).to.not.be.empty;\r\n});\r\n\r\n//Checing if the input fields are correct or not\r\npm.test(\"Check if Id is correct\", function () {\r\n    pm.expect(responsebody.data.id).to.equal(pm.environment.get(\"student_id\"));\r\n});\r\n\r\npm.test(\"Check if first_name is correct\", function () {\r\n    pm.expect(responsebody.data.first_name).to.equal(pm.environment.get(\"fname\"));\r\n});\r\n\r\npm.test(\"Check if middle_name is correct\", function () {\r\n    pm.expect(responsebody.data.middle_name).to.equal(pm.environment.get(\"mname\"));\r\n    });\r\n\r\npm.test(\"Check if last_name is correct\", function () {\r\n    pm.expect(responsebody.data.last_name).to.equal(pm.environment.get(\"lname\"));\r\n    });\r\n\r\npm.test(\"Check if DOB is correct\", function () {\r\n    pm.expect(responsebody.data.date_of_birth).to.equal(pm.environment.get(\"checkin\"));\r\n });\r\n\r\npm.test(\"Check if date_of_birth is in the correct format\", function () {\r\n    pm.expect(responsebody.data.date_of_birth).to.match(/^\\d{2}-\\d{2}-\\d{4}$/);\r\n });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/studentsDetails/{{student_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "studentsDetails",
+            "{{student_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update_Student",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "//Setting a dynanic name\r\nvar firstname=pm.variables.replaceIn('{{$randomFirstName}}')\r\npm.environment.set(\"fname\",firstname)\r\nvar firstname=pm.variables.replaceIn('{{$randomFirstName}}')\r\npm.environment.set(\"mname\",firstname)\r\nvar lastname=pm.variables.replaceIn('{{$randomLastName}}')\r\npm.environment.set(\"lname\",lastname)\r\n\r\n//setting dates\r\nvar check=require('moment')\r\nvar checkin=check().format('DD-MM-YYYY')\r\npm.environment.set(\"checkin\",checkin)"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\npm.environment.set(\"student_id\", responsebody.id);\r\n\r\n//Response time less than 30ms\r\npm.test(\"Check if time less than 1000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);\r\n});\r\n\r\n//Check status 200\r\npm.test(\"Check if status is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n//Check response size\r\npm.test(\"Response size is below 1000 bytes\", function () {\r\n    pm.expect(pm.response.responseSize).to.be.below(1000);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": \"{{student_id}}\",\r\n    \"first_name\": \"{{fname}}\",\r\n    \"middle_name\": \"{{mname}}\",\r\n    \"last_name\": \"{{lname}}\",\r\n    \"date_of_birth\": \"{{checkin}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/studentsDetails/{{student_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "studentsDetails",
+            "{{student_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create_Technical_Skills",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "//years of experience two digit\r\npm.environment.set(\"yearexp\", Math.floor(Math.random() * 10) + 1);\r\n\r\n//student id\r\npm.environment.set(\"st_id\", Math.floor(Math.random() * 900) + 100);\r\n"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\n// pm.environment.set(\"student_id\", responsebody.id);\r\n\r\n//Response time less than 30ms\r\npm.test(\"Check if time less than 1000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);\r\n});\r\n\r\n//Check status 201\r\npm.test(\"Check if status is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n//Check response size\r\npm.test(\"Response size is below 1000 bytes\", function () {\r\n    pm.expect(pm.response.responseSize).to.be.below(1000);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \r\n    \"id\": \"{{student_id}}\", \r\n    \"language\": \r\n    [ \r\n        \"Bangla\", \r\n        \"English\" \r\n    ], \r\n    \"yearexp\": \"{{yearexp}}\", \r\n    \"lastused\": \"Yesterday\", \r\n    \"st_id\": \"{{st_id}}\" \r\n} \r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/technicalskills",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "technicalskills"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create_Student_Address",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var city=pm.variables.replaceIn('{{$randomCity}}')\r\npm.environment.set(\"city\",city)\r\n\r\nvar state=pm.variables.replaceIn('{{$randomState}}')\r\npm.environment.set(\"state\",state)\r\n\r\nvar country=pm.variables.replaceIn('{{$randomCountry}}')\r\npm.environment.set(\"country\",country)\r\n\r\nvar home_code=pm.variables.replaceIn('{{$randomInt}}')\r\npm.environment.set(\"home_code\",home_code)\r\n\r\nvar std_code=pm.variables.replaceIn('{{$randomInt}}')\r\npm.environment.set(\"std_code\",std_code)\r\n\r\nvar home_phone=pm.variables.replaceIn('{{$randomPhoneNumber}}')\r\npm.environment.set(\"home_phone\",home_phone)\r\n\r\nvar phone=pm.variables.replaceIn('{{$randomPhoneNumber}}')\r\npm.environment.set(\"phone\",phone)\r\n\r\nvar home_phone2=pm.variables.replaceIn('{{$randomPhoneNumber}}')\r\npm.environment.set(\"home_phone2\",home_phone2)\r\n\r\nvar phone2=pm.variables.replaceIn('{{$randomPhoneNumber}}')\r\npm.environment.set(\"phone2\",phone2)"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\n// pm.environment.set(\"student_id\", responsebody.id);\r\n\r\n//Response time less than 30ms\r\npm.test(\"Check if time less than 1000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);\r\n});\r\n\r\n//Check status 201\r\npm.test(\"Check if status is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n//Check response size\r\npm.test(\"Response size is below 1000 bytes\", function () {\r\n    pm.expect(pm.response.responseSize).to.be.below(1000);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \r\n    \"Permanent_Address\": { \r\n        \"House_Number\": \"{{home_code}}\",\r\n        \"City\": \"{{city}}\",\r\n        \"State\": \"{{state}}\", \r\n        \"Country\": \"{{country}}\",\r\n        \"PhoneNumber\": [ \r\n            { \r\n            \"Std_Code\": \"{{std_code}}\",\r\n            \"Home\": \"{{home_phone}}\",\r\n            \"Mobile\": \"{{phone}}\" \r\n            },\r\n            { \r\n            \"Std_Code\": \"{{std_code}}\",\r\n            \"Home\": \"{{home_phone2}}\", \r\n            \"Mobile\": \"{{phone2}}\"\r\n            } \r\n        ] \r\n    },\r\n    \"stId\": \"{{st_id}}\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/addresses/{{student_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "addresses",
+            "{{student_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get_Student",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\n\r\n//Response time less than 30ms\r\npm.test(\"Check if time less than 1000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);\r\n});\r\n\r\n//Check status 200\r\npm.test(\"Check if status is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n//Check response size\r\npm.test(\"Response size is below 1000 bytes\", function () {\r\n    pm.expect(pm.response.responseSize).to.be.below(1000);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/studentsDetails",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "studentsDetails"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
